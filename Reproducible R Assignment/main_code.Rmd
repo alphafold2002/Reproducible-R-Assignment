@@ -1,0 +1,78 @@
+---
+title: "Reproducible R"
+output: html_document
+---
+
+```{r eval= FALSE,echo=FALSE}
+
+#set working directory using the following path: Session> Set working directory> Choose working directory
+#select the location of the folder downloaded from GitHub ("Reproducible R Assignment" and NOT "Reproducible-r-Assignment-main")
+
+#install packages- only run the code corresponding to the packages that are not yet installed
+install.packages("palmerpenguins")
+install.packages("ggplot2")
+install.packages("janitor")
+install.packages("dplyr")
+install.packages("ragg")
+install.packages("svglite")
+
+```
+
+
+```{r include= FALSE}
+#load libraries 
+source("functions/library_packages.R")
+
+#load functions from repository
+source("functions/cleaning.R")
+source("functions/plotting.R")
+
+```
+
+```{r include= FALSE}
+#load the most simplified version of the data set from the data_clean folder
+#this contains only the simplified names of the penguin species, and the dimensions of their bill
+penguins_simplified<-read.csv("data_clean/penguins_simplified.csv")
+penguins_simplified
+```
+
+
+```{r include=FALSE}
+
+#analysing the effects of body mass, species, and their interaction on bill length using ANCOVA
+#There are 3 null hypotheses:
+  #H0.1- The mean bill length of different species is not significantly different.  
+  #H0.2- The slope of the regression lines are not significantly different from 0.
+  #H0.3- The slopes of the three regression lines are not significantly different from each other. 
+ancova<- aov(culmen_length_mm~ body_mass_g+ species+ body_mass_g*species, data=penguins_simplified)
+summary (ancova)
+
+#The results provide evidence to refute the first two null hypotheses. This means that there is a main effect of body mass and species on bill length
+```
+
+```{r include=FALSE}
+#check whether it meets the assumptions of equal distribution and normality
+plot(ancova, which=1)
+plot(ancova, which=2)
+
+```
+
+
+```{r echo=FALSE}
+#plot the results of the statistical test using the plot_ancova function found in functions/plotting.R 
+source("functions/plotting.R")
+plot_ancova(ancova)
+
+```
+
+
+```{r r include= FALSE}
+dir.create("figures")
+#save the figure using the save_figure_svg function found in functions/plotting.R
+#to change formatting, input size and scaling of your choice 
+
+save_figure_svg(ancova, "figures/Ancova_figure.svg", 20, 1.4)
+```
+
+
+
