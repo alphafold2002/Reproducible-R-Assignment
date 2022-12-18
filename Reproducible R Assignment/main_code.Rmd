@@ -74,5 +74,9 @@ dir.create("figures")
 save_figure_svg(ancova, "figures/Ancova_figure.svg", 20, 1.4)
 ```
 
-
-
+```{r r include= FALSE}
+dir.create("package_info")
+sink(file = "package_info/package_versions.txt", )
+sessionInfo() 
+sink () 
+```
